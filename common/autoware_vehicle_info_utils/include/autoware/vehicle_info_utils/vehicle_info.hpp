@@ -69,6 +69,9 @@ struct VehicleInfo
   [[nodiscard]] autoware_utils::LinearRing2d createFootprint(
     const double lat_margin, const double lon_margin) const;
 
+  [[nodiscard]] autoware_utils::LinearRing2d createFootprint(
+    const double front_lat_margin, const double rear_lat_margin, const double lon_margin) const;
+
   [[nodiscard]] double calcMaxCurvature() const;
   [[nodiscard]] double calcCurvatureFromSteerAngle(const double steer_angle) const;
   [[nodiscard]] double calcSteerAngleFromCurvature(const double curvature) const;

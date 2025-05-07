@@ -50,6 +50,48 @@ autoware_utils::LinearRing2d VehicleInfo::createFootprint(
   return footprint;
 }
 
+autoware_utils::LinearRing2d VehicleInfo::createFootprint(
+  const double front_lat_margin,
+  const double rear_lat_margin,
+  const double lon_margin) const
+{
+  using autoware_utils::LinearRing2d;
+  using autoware_utils::Point2d;
+
+  // Longitudinal positions
+  const double x_front  = front_overhang_m + wheel_base_m + lon_margin;
+  const double x_center = wheel_base_m * 0.5;
+  const double x_rear   = -(rear_overhang_m + lon_margin);
+
+  // Lateral extents at front (use front_lat_margin)
+  const double y_left_front  =  wheel_tread_m * 0.5 + left_overhang_m  + front_lat_margin;
+  const double y_right_front = -(wheel_tread_m * 0.5 + right_overhang_m + front_lat_margin);
+
+  // Lateral extents at center & rear (both use rear_lat_margin)
+  const double half_track = wheel_tread_m * 0.5;
+  const double y_left_cr   =  half_track + left_overhang_m  + rear_lat_margin;
+  const double y_right_cr  = -half_track - right_overhang_m - rear_lat_margin;
+
+  LinearRing2d footprint;
+  footprint.reserve(7);
+  // 1) front-left
+  footprint.emplace_back(x_front,  y_left_front);
+  // 2) front-right
+  footprint.emplace_back(x_front,  y_right_front);
+  // 3) center-right (rear_lat_margin)
+  footprint.emplace_back(x_center, y_right_cr);
+  // 4) rear-right
+  footprint.emplace_back(x_rear,   y_right_cr);
+  // 5) rear-left
+  footprint.emplace_back(x_rear,   y_left_cr);
+  // 6) center-left
+  footprint.emplace_back(x_center, y_left_cr);
+  // close loop
+  footprint.emplace_back(x_front,  y_left_front);
+
+  return footprint;
+}
+
 VehicleInfo createVehicleInfo(
   const double wheel_radius_m, const double wheel_width_m, const double wheel_base_m_arg,
   const double wheel_tread_m, const double front_overhang_m, const double rear_overhang_m,
