@@ -60,7 +60,7 @@ autoware_utils::LinearRing2d VehicleInfo::createFootprint(
 
   // Longitudinal positions
   const double x_front  = front_overhang_m + wheel_base_m + lon_margin;
-  const double x_center = wheel_base_m * 0.5;
+  const double x_center = 0.0;
   const double x_rear   = -(rear_overhang_m + lon_margin);
 
   // Lateral extents at front (use front_lat_margin)
